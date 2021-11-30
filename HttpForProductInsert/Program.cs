@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -12,8 +13,9 @@ namespace HttpForProductInsert
     { 
         static async Task Main(string[] args)
         {
-           
 
+
+             Random rnd = new Random();
              using var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.UserAgent.TryParseAdd("request");//Set the User Agent to "request"
@@ -23,7 +25,7 @@ namespace HttpForProductInsert
             List<Product> users = JsonConvert.DeserializeObject<List<Product>>(userJson);
 
 
-            using (SqlConnection conn = new SqlConnection("server=UT-LTP-076;Database=EcommerceDB;Trusted_Connection=True;")) 
+            using (SqlConnection conn = new SqlConnection("server=UT-LTP-076;Database=ECommerce;Trusted_Connection=True;")) 
             using (SqlCommand comm = new SqlCommand())
              
 
@@ -35,8 +37,8 @@ namespace HttpForProductInsert
                         comm.Connection = conn;
                         conn.Open();
                     }
-
-                    comm.CommandText = "INSERT INTO Product (title,price,CatagoryId,description,image) VALUES (@title,@price,@category,@description,@image)";
+                    var dd = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
+                    comm.CommandText = "INSERT INTO Product (title,price,CategoryId,description,image) VALUES (@title,@price,@category,@description,@image)";
                     //SqlParameter id = comm.Parameters.AddWithValue("@id", users[i].id);
                     SqlParameter title = comm.Parameters.AddWithValue("@title", users[i].title);
                     SqlParameter price = comm.Parameters.AddWithValue("@price", users[i].price);
@@ -57,7 +59,8 @@ namespace HttpForProductInsert
                         SqlParameter category = comm.Parameters.AddWithValue("@category", 4);
                     } 
                     SqlParameter description = comm.Parameters.AddWithValue("@description", users[i].description);
-                    SqlParameter image = comm.Parameters.AddWithValue("@image", users[i].image);
+
+                    SqlParameter image = comm.Parameters.AddWithValue("@image", dd.Name);
 
                
 
